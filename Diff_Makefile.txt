@@ -1,0 +1,17 @@
+run_calculator: calc.exe
+	calculator.exe
+
+calc.exe: Parser.o Calculator.o Diff_Logs.o Diff.h
+	g++ Parser.o Calculator.o Diff_Logs.o -o calculator.exe
+
+Parser.o: Parser.cpp
+	g++ -c Parser.cpp
+
+Calculator.o: Calculator.cpp
+	g++ -c Calculator.cpp
+
+Diff_Logs.o: Diff_Logs.cpp
+	g++ -c Diff_Logs.cpp -DSUPERDEBUG
+
+clear:
+	del Calculator.o Diff_Logs.o
