@@ -1,17 +1,31 @@
-run_calculator: calc.exe
-	calculator.exe
+run_diff: diff.exe
+	Differentiate.exe
 
-calc.exe: Parser.o Calculator.o Diff_Logs.o Diff.h
-	g++ Parser.o Calculator.o Diff_Logs.o -o calculator.exe
+diff.exe: Parser.o Diff_Logs.o Output_Processing.o Differentiate.o Simplifying.o Creation.o Diff.h
+	g++ -w Parser.o Diff_Logs.o Output_Processing.o Differentiate.o Simplifying.o Creation.o -o Differentiate.exe
 
 Parser.o: Parser.cpp
-	g++ -c Parser.cpp
+	g++ -c -w Parser.cpp
 
-Calculator.o: Calculator.cpp
-	g++ -c Calculator.cpp
+Differentiate.o: Differentiate.cpp
+	g++ -c -w Differentiate.cpp
+
+Simplifying.o: Simplifying.cpp
+	g++ -c -w Simplifying.cpp
 
 Diff_Logs.o: Diff_Logs.cpp
-	g++ -c Diff_Logs.cpp -DSUPERDEBUG
+	g++ -c -w Diff_Logs.cpp -DSUPERDEBUG
+
+Output_Processing.o: Output_Processing.cpp
+	g++ -c -w Output_Processing.cpp
+
+Creation.o: Creation.cpp
+	g++ -c -w Creation.cpp
 
 clear:
-	del Calculator.o Diff_Logs.o
+	cls
+	del Parser.o Differentiate.o Simplifying.o Diff_Logs.o Output_Processing.o Help.o
+	delete.exe LaTeX\\LaTeX_expression_.pdf
+	delete.exe LaTeX\\LaTeX_expression_.log
+	delete.exe LaTeX\\LaTeX_expression_.aux
+	delete.exe  Logs\\DiffGraphicLogs_.png

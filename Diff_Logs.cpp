@@ -1,11 +1,11 @@
 #include "Diff.h"
 
+// Errors Processing
 void SyntaxRequire (string* str, char request)
 {
-    if (str->pointer[str->offset] != request)
+    if (str->pointer[str->offset++] != request)
         ErrorReport (str, WRONG_SYMBOL);
 }
-
 
 void ErrorReport (string* str, error_t err_code)
 {
@@ -20,11 +20,11 @@ void ErrorReport (string* str, error_t err_code)
     switch (err_code)
     {
         case (WRONG_SYMBOL):        fprintf  (logs, "\nThere is wrong symbol in string (above pointer):\n");
-                                    CalculatorLogs (str, logs, CURRENT);
+                                    ParserLogs (str, logs, CURRENT);
                                     break;
         
         case (WRONG_OPERATION):     fprintf  (logs, "\nThere is wrong operation in string (before pointer):\n");
-                                    CalculatorLogs (str, logs, LEFT);
+                                    ParserLogs (str, logs, LEFT);
                                     break;
     }
         
@@ -33,8 +33,7 @@ void ErrorReport (string* str, error_t err_code)
     str->fuckedup = true;
 }
 
-
-void CalculatorLogs (string* str, FILE* logs, int mode)
+void ParserLogs  (string* str, FILE* logs, int mode)
 {
     fprintf (logs, "%s\n", str->pointer);
     for (int i = 0; i < str->offset; i++)
@@ -49,7 +48,11 @@ void CalculatorLogs (string* str, FILE* logs, int mode)
                         break;
     }
 }
+//----------------------
 
+
+
+// Graphic Logs
 void DiffTreeLogs (Node* root)
 {
     FILE* GraphicLogs = fopen ("Logs\\DiffGraphicLogs.txt", "w");
@@ -60,78 +63,143 @@ void DiffTreeLogs (Node* root)
     
     if (root)
     {
-        fprintf (GraphicLogs, "\"%p\" [color = \"#000800\", label = \"{%lg}\"]\n", 
-                                                                            root, root->value);
+        PrintNodeLogs (root, GraphicLogs);
+        
         if (root->left)
         {
             PrintSubTree (root->left, GraphicLogs);
-            fprintf (GraphicLogs, "\"%p\" -> \"%p\"\n", root, root->left);
+            PrintArrow   (root, root->left, GraphicLogs);
         }
+
         if (root->right)
         {
             PrintSubTree (root->right, GraphicLogs);
-            fprintf (GraphicLogs, "\"%p\" -> \"%p\"\n", root, root->right);
+            PrintArrow   (root, root->right, GraphicLogs);
         }
     }
-    else
-    {
-        fprintf (GraphicLogs, "\"%d\" [color = \"#000800\", fillcolor = blue, label = \"{NULL}\"]\n", 0);
-    }
+    
     
     fprintf (GraphicLogs, "}\n");
     
     fclose (GraphicLogs);
     
+    MakeOpenPhoto (call);
     
-    char* command_1 = (char*) calloc (100, sizeof(char));
-    sprintf (command_1, "dot -Tjpeg Logs\\DiffGraphicLogs.txt > Logs\\DiffGraphicLogs_%d.jpeg", call);
-    char* command_2 = (char*) calloc (100, sizeof(char));
-    sprintf (command_2, "start Logs\\DiffGraphicLogs_%d.jpeg", call);
+    call++;
+}
+
+void PrintSubTree (Node* root, FILE* GraphicLogs)
+{
+    if (root)
+    {
+        PrintNodeLogs (root, GraphicLogs);
+        
+        if (root->parent)
+            PrintArrow (root, root->parent, GraphicLogs);
+        
+        if (root->left)
+        {
+            PrintSubTree (root->left, GraphicLogs);
+            PrintArrow   (root, root->left, GraphicLogs);
+        }
+        
+        if (root->right)
+        {
+            PrintSubTree (root->right, GraphicLogs);
+            PrintArrow   (root, root->right, GraphicLogs); 
+        }
+    }
+}
+
+void PrintNodeLogs  (Node* node, FILE* GraphicLogs)
+{
+    if (node)
+    {
+        switch (node->type)
+        {
+            case (TYPE_CONST):  fprintf (GraphicLogs, "\"%p\" [color = \"#000800\", fillcolor = turquoise,    label = \"{%s}\"]\n", 
+                                                                                    node, node->string);
+                                break;
+                       
+            case (TYPE_NUM):    fprintf (GraphicLogs, "\"%p\" [color = \"#000800\", fillcolor = turquoise,    label = \"{%lg}\"]\n", 
+                                                                                    node, node->value);
+                                break;
+                                
+            case (TYPE_OP):     fprintf (GraphicLogs, "\"%p\" [color = \"#000800\", fillcolor = \" #ed96ec\", label = \"{%c}\"]\n",
+                                                                                    node, FindOperation (node));
+                                break;
+            
+            case (TYPE_VAR):    fprintf (GraphicLogs, "\"%p\" [color = \"#000800\", fillcolor = turquoise,    label = \"{%s}\"]\n",
+                                                                                    node, node->string);
+                                break;
+            
+            case (TYPE_FUNC):   fprintf (GraphicLogs, "\"%p\" [color = \"#000800\", fillcolor = \"#8264ff\",  label = \"{%s}\"]\n",
+                                                                                    node, node->string);
+                                break;
+        }
+    }
+    else
+    {
+        static int num_of_nulls = 1;
+        fprintf (GraphicLogs, "\"%d\" [color = \"#000800\", fillcolor = blueviolet, label = \"{NULL}\"]\n", 
+                                                                                0 - num_of_nulls);
+        num_of_nulls++;
+    }
+}
+
+void PrintArrow (Node* beginning, Node* ending, FILE* GraphicLogs)
+{
+    if (ending)
+    {
+        if (beginning->parent == ending)
+            fprintf (GraphicLogs, "\"%p\" -> \"%p\" [color = black]\n", beginning, ending);
+        else
+            fprintf (GraphicLogs, "\"%p\" -> \"%p\"\n", beginning, ending);
+    }
+    else
+    {
+        static int num_of_nulls = 1;
+        fprintf (GraphicLogs, "\"%p\" -> \"%d\"\n", beginning, 0 - num_of_nulls);
+        
+        num_of_nulls++;
+    }
+}
+
+void MakeOpenPhoto (int call)
+{
+    char* command_1 = (char*) calloc (MAX_COMMAND_LEN, sizeof(char));
+    char* command_2 = (char*) calloc (MAX_COMMAND_LEN, sizeof(char));
+    
+    sprintf (command_1, "dot -Tjpeg Logs\\DiffGraphicLogs.txt > Logs\\DiffGraphicLogs_%d.png", call);
+    sprintf (command_2, "start Logs\\DiffGraphicLogs_%d.png", call);
     
     system (command_1);
     system (command_2);
     
     free (command_1);
     free (command_2);
-    
-    call++;
 }
 
-void PrintSubTree (Node* root, FILE* GraphicLogs)
-{   
-    static int check = -1;
+char FindOperation (Node* node)
+{
+    int operation = (int) node->value;
     
-    if (root->left || root->right)
-        fprintf (GraphicLogs, "\"%p\" [color = \"#000800\", label = \"{%lg}\"]\n", 
-                                                                                root, root->value);
-    else
-        fprintf (GraphicLogs, "\"%p\" [color = \"#000800\", fillcolor = turquoise, label = \"{%lg}\"]\n", 
-                                                                                root, root->value);
-    
-    fprintf (GraphicLogs, "\"%p\" -> \"%p\"\n [color = white]", root, root->parent);
-    
-    if (root->left)
+    switch (operation)
     {
-        PrintSubTree (root->left, GraphicLogs);
-        fprintf (GraphicLogs, "\"%p\" -> \"%p\"\n", root, root->left);
-    }
-    else
-    {
-        fprintf (GraphicLogs, "\"%d\" [color = \"#000800\", fillcolor = blue, label = \"{NULL}\"]\n", check);
-        fprintf (GraphicLogs, "\"%p\" -> \"%d\"\n", root, check);
-        check--;
-    }
-    
-    if (root->right)
-    {
-        PrintSubTree (root->right, GraphicLogs);
-        fprintf (GraphicLogs, "\"%p\" -> \"%p\"\n", root, root->right);
-    }
-    else
-    {
-        fprintf (GraphicLogs, "\"%d\" [color = \"#000800\", fillcolor = blue, label = \"{NULL}\"]\n", check);
-        fprintf (GraphicLogs, "\"%p\" -> \"%d\"\n", root, check);
-        check--;
+        case (OP_ADD):      return '+';
+                            break;
+        
+        case (OP_SUB):      return '-';
+                            break;
+        
+        case (OP_MUL):      return '*';
+                            break;
+        
+        case (OP_DIV):      return '/';
+                            break;
+        
+        case (OP_DEG):      return '^';
+                            break;
     }
 }
-
+//----------------------
