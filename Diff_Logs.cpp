@@ -55,7 +55,7 @@ void ParserLogs  (string* str, FILE* logs, int mode)
 // Graphic Logs
 void DiffTreeLogs (Node* root)
 {
-    FILE* GraphicLogs = fopen ("Logs\\DiffGraphicLogs.txt", "w");
+    FILE* GraphicLogs = fopen ("Logs/DiffGraphicLogs.txt", "w");
     static int call = 0;
     
     fprintf (GraphicLogs, "digraph %d {\n", call);
@@ -170,8 +170,8 @@ void MakeOpenPhoto (int call)
     char* command_1 = (char*) calloc (MAX_COMMAND_LEN, sizeof(char));
     char* command_2 = (char*) calloc (MAX_COMMAND_LEN, sizeof(char));
     
-    sprintf (command_1, "dot -Tjpeg Logs\\DiffGraphicLogs.txt > Logs\\DiffGraphicLogs_%d.png", call);
-    sprintf (command_2, "start Logs\\DiffGraphicLogs_%d.png", call);
+    sprintf (command_1, "dot -Tpng Logs/DiffGraphicLogs.txt > Logs/DiffGraphicLogs_%d.png", call);
+    sprintf (command_2, "xdg-open Logs/DiffGraphicLogs_%d.png", call);
     
     system (command_1);
     system (command_2);

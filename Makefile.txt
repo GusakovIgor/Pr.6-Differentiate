@@ -1,0 +1,23 @@
+RunDiff: Diff
+	bin/Differentiate.out
+
+Diff: Parser Diff_Logs Output_Processing Differentiate Simplifying Creation Diff.h
+	g++ -w Parser.o Diff_Logs.o Output_Processing.o Differentiate.o Simplifying.o Creation.o -o bin/Differentiate.out
+
+Parser: Parser.cpp
+	g++ -c -w Parser.cpp
+
+Differentiate: Differentiate.cpp
+	g++ -c -w Differentiate.cpp
+
+Simplifying: Simplifying.cpp
+	g++ -c -w Simplifying.cpp
+
+Diff_Logs: Diff_Logs.cpp
+	g++ -c -w Diff_Logs.cpp -DSUPERDEBUG
+
+Output_Processing: Output_Processing.cpp
+	g++ -c -w Output_Processing.cpp
+
+Creation: Creation.cpp
+	g++ -c -w Creation.cpp

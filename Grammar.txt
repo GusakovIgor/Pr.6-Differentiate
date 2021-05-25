@@ -1,6 +1,15 @@
-+ - >= 1 повторения
-* - >= 0 повторений
-# - 0 или 1 повторение
+G - GENERAL
+E - EXPRESSION
+T - TERM
+D - DEGREE
+P - PRIMAL
+VAR - VARIABLE
+N - NUMBER
+
+
++ - >= 1 repeats
+* - >= 0 repeats
+# - 0 or 1 repeat
 
 G::= E'\0'
 

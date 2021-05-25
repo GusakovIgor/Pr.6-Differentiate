@@ -10,7 +10,7 @@ typedef int error_t;
 
 const int MAX_STRING_LEN  = 100;
 
-const int MAX_COMMAND_LEN = 100;
+const int MAX_COMMAND_LEN = 200;
 
 const int MAX_PHRASE_LEN  = 100;
 

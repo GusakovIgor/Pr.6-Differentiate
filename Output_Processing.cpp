@@ -3,7 +3,7 @@
 void FormulaPrint (Tree* tree)
 {
     static int call = 0;
-    FILE* LaTeX = fopen ("LaTeX\\LaTeX_expression.latex", "w");
+    FILE* LaTeX = fopen ("LaTeX/LaTeX_expression.latex", "w");
     
     PrintHeader (LaTeX);
     
@@ -25,8 +25,8 @@ void CompileLaTeX (int call)
     char* command_1 = (char*) calloc (MAX_COMMAND_LEN, sizeof (char));
     char* command_2 = (char*) calloc (MAX_COMMAND_LEN, sizeof (char));
     
-    sprintf (command_1, "pdflatex --output-directory=./LaTeX --output-format=pdf --jobname LaTeX_expression_%d ./LaTeX/LaTeX_expression.latex", call);
-    sprintf (command_2, "start LaTeX\\LaTeX_expression_%d.pdf", call);
+    sprintf (command_1, "pdflatex --output-directory=LaTeX --output-format=pdf --jobname LaTeX_expression_%d LaTeX/LaTeX_expression.latex", call);
+    sprintf (command_2, "xdg-open LaTeX/LaTeX_expression_%d.pdf", call);
     
     system (command_1);
     system (command_2);
@@ -38,7 +38,7 @@ void CompileLaTeX (int call)
 void PrintHeader (FILE* LaTeX)
 {
     fprintf (LaTeX, "\\documentclass[a4paper,12pt]{article}\n");
-    fprintf (LaTeX, "\\usepackage{amsmath,amsfonts,amssymb,amsthm,mathtools}\n");
+    fprintf (LaTeX, "\\usepackage{amsmath,amsfonts,amssymb,amsthm}\n");
 }
 
 void PrintNode (Node* node, FILE* LaTeX)

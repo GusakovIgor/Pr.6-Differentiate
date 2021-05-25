@@ -5,7 +5,7 @@ Node* Parser ()
 {
     string* str = StringConstruct (str);
 
-    gets (str->pointer);
+    scanf ("%s", str->pointer);
 
     Node* value = GetG (str);
 
@@ -120,7 +120,9 @@ Node* GetP (string* str)
         value = GetVAR_OR_FUNC (str);
     }
     else
+    {
         value = GetN  (str);
+    }
 
     SkipSpaces (str);
     

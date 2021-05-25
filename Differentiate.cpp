@@ -7,19 +7,20 @@ int main ()
     
     tree->root = Parser ();
     
-    DiffTreeLogs (tree->root);
+    // DiffTreeLogs (tree->root);
     FormulaPrint (tree);
-    
     diff_tree->root = Differentiate (tree->root);
     MakeParents  (diff_tree->root);
+    FormulaPrint (diff_tree);
     diff_tree->root = SimplifyNode  (diff_tree->root);
     
-    DiffTreeLogs (diff_tree->root);
+    // DiffTreeLogs (diff_tree->root);
     FormulaPrint (diff_tree);
+
     
     tree      = TreeDestruct (tree);
     diff_tree = TreeDestruct (diff_tree);
-    
+
     return 0;
 }
 
