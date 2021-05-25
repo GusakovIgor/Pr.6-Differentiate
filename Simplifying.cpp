@@ -95,6 +95,7 @@ Node* SimplifyMul (Node* node)
         }
         else if (Lval == 0.0)
         {
+            printf ("\nI'm here\n");
             return ZeroCase (node);
         }
     }

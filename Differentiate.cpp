@@ -30,9 +30,9 @@ Node* Differentiate (Node* node)
 {
     switch (node->type)
     {
-        case (TYPE_CONST):  return CreateNode (TYPE_NUM, 0, NULL, NULL);
+        case (TYPE_CONST):  return CreateNode (TYPE_NUM, 0.0, NULL, NULL);
         
-        case (TYPE_NUM):    return CreateNode (TYPE_NUM, 0, NULL, NULL);
+        case (TYPE_NUM):    return CreateNode (TYPE_NUM, 0.0, NULL, NULL);
         
         case (TYPE_VAR):    return CreateNode (TYPE_NUM, (strcmp(node->string, "x") == 0) ? 1.0 : 0.0, NULL, NULL);
         
